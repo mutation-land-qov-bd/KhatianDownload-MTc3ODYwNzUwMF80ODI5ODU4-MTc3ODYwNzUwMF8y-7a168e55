@@ -231,21 +231,21 @@
     <div class="content-area">
         <div id="sidebar">
             <!-- এখানে active-thumbnail ক্লাসটি ডিফল্টভাবে দেওয়া হয়েছে -->
-            <img src="DCR.1.2.jpg" class="thumbnail active-thumbnail" alt="Thumbnail" onclick="selectThumbnail(this)">
+            <img src="NAM_JARI_KHARIZ_copy_jpg32323.jpg" class="thumbnail active-thumbnail" alt="Thumbnail" onclick="selectThumbnail(this)">
             <div class="page-num">Page 1</div>
         </div>
 
         <div class="viewer">
-            <img id="documentImage" src="DCR.1.2.jpg" class="main-img" alt="Main Document">
+            <img id="documentImage" src="NAM_JARI_KHARIZ_copy_jpg32323.jpg" class="main-img" alt="Main Document">
         </div>
     </div>
 
     <script>
                 // মোবাইলের জন্য আলাদা টাইটেল সেট করা
 if (window.innerWidth <= 600) {
-    document.title = "অনলাইন_ডিসির_প্রিন্ট.pdf"; // মোবাইলে যে নাম দেখাতে চান
+    document.title = "অনলাইন_খতিয়ান_প্রিন্ট.pdf"; // মোবাইলে যে নাম দেখাতে চান
 } else {
-    document.title = "Online DCR 8084106"; // পিসিতে যে নাম থাকবে
+    document.title = "খতিয়ান নং ২৫-৩৪৫৬"; // পিসিতে যে নাম থাকবে
 }
         // সাইডবার হাইড/শো করার ফাংশন
         function toggleSidebar() {
@@ -308,7 +308,7 @@ if (window.innerWidth <= 600) {
         function downloadDocument() {
             const link = document.createElement('a');
             link.href = img.src;
-            link.download = 'DCR.1.2.jpg';
+            link.download = 'NAM_JARI_KHARIZ_copy_jpg32323.jpg';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
