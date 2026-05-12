@@ -19,7 +19,6 @@
             flex-direction: column;
         }
 
-        /* Toolbar */
         .toolbar {
             background-color: #3c3c3c;
             color: #f1f1f1;
@@ -78,7 +77,6 @@
 
         .divider { width: 1px; height: 20px; background-color: #5f6368; margin: 0 8px; }
 
-        /* Layout */
         .content-area {
             display: flex;
             flex: 1;
@@ -86,9 +84,8 @@
             overflow: hidden;
         }
 
-        /* Sidebar */
         #sidebar {
-            display: none; /* ডিফল্টভাবে একটিভ করা হয়েছে */
+            display: none;
             width: 200px;
             background-color: #323639;
             border-right: 1px solid rgba(0,0,0,0.2);
@@ -101,7 +98,7 @@
 
         .thumbnail {
             width: 120px;
-            border: 2px solid transparent; /* ডিফল্ট বর্ডার ইনভিজিবল */
+            border: 2px solid transparent;
             border-radius: 2px;
             cursor: pointer;
             background-color: white;
@@ -109,31 +106,37 @@
             transition: border 0.3s;
         }
 
-        /* একটিভ থাম্বনেইল বর্ডার */
         .active-thumbnail {
             border: 2px solid #8ab4f8 !important;
         }
 
         .page-num { color: #f1f1f1; font-size: 12px; margin-bottom: 20px; }
 
-        /* Viewer Area */
+        /* ── Viewer: overflow scroll so rotated/zoomed image is scrollable ── */
         .viewer {
             flex: 1;
             overflow: auto;
-            display: block;
-            text-align: center;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
             padding: 40px 15px;
         }
 
+        /* Wrapper handles rotation; img handles zoom scale */
+        #imgWrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s ease;
+            transform-origin: center center;
+        }
+
         .main-img {
-            width: 850px;
-            max-width: 95%; 
+            display: block;
             height: auto;
-            display: inline-block;
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             background-color: white;
-            transform-origin: top center;
-            transition: transform 0.1s ease-out;
+            transition: width 0.1s ease-out;
         }
 
         .copilot-btn {
@@ -148,45 +151,98 @@
             color: #f1f1f1;
             margin-left: 8px;
         }
-         
-/* মোবাইল ফোনের জন্য ফুল স্ক্রিন এবং ক্রোম ব্যাকগ্রাউন্ড */
-@media only screen and (max-width: 600px) {
-    .toolbar {
-        display: none !important; /* উপরের বার হাইড করবে */
-    }
-    
-    body, html {
-        background-color: #fff8f0 !important; /* ক্রোমের ডার্ক মোড ব্যাকগ্রাউন্ড কালার */
-    }
 
-    .content-area {
-        height: 100% !important;
-    }
+        /* ══════════════════════════════════════
+           PRINT STYLES
+           ══════════════════════════════════════ */
+        @media print {
+            /* Force landscape and fill the page */
+            @page {
+                size: landscape;
+                margin: 0;
+            }
 
-    .viewer {
-        padding: 0 !important; /* সাইডের সব ফাঁকা জায়গা (Padding) রিমুভ করবে */
-        display: flex;
-        align-items: center; /* ইমেজ যাতে একদম উপর থেকে শুরু হয় */
-        justify-content: center;
-        background-color: #fff8f0;
-    }
+            /* Hide everything except the image */
+            body, html {
+                overflow: visible !important;
+                height: auto !important;
+                background: white !important;
+            }
 
-    .main-img {
-        width: 100% !important; /* ফুল স্ক্রিন উইডথ */
-        max-width: 100% !important;
-        margin: 0 !important;
-        box-shadow: none !important; /* বর্ডার শ্যাডো সরিয়ে দিলে ক্লিন দেখাবে */
-        border-radius: 0 !important;
-    }
-}
-  
+            .toolbar,
+            #sidebar,
+            .viewer {
+                display: none !important;
+            }
+
+            /* Inject the image directly into body for print */
+            body::after {
+                content: '';
+                display: block;
+            }
+
+            #printContainer {
+                display: block !important;
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: white;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #printContainer img {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                /* Apply the current rotation for print */
+                transform: var(--print-rotation, rotate(0deg));
+            }
+        }
+
+        /* Print container hidden on screen */
+        #printContainer {
+            display: none;
+        }
+
+        /* ── Mobile ── */
+        @media only screen and (max-width: 600px) {
+            .toolbar { display: none !important; }
+            
+            body, html { background-color: #fff8f0 !important; }
+
+            .content-area { height: 100% !important; }
+
+            .viewer {
+                padding: 0 !important;
+                align-items: center;
+                background-color: #fff8f0;
+            }
+
+            .main-img {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Hidden container used only for printing -->
+    <div id="printContainer">
+        <img id="printImage" src="NAM JARI KHARIZ copy.jpg32323.jpg" alt="Print Document">
+    </div>
+
     <div class="toolbar">
         <div class="toolbar-section">
-            <!-- ৩-লাইন মেনু বাটন দিয়ে সাইডবার কন্ট্রোল -->
             <div class="icon-btn" onclick="toggleSidebar()"><span class="material-symbols-outlined">menu</span></div>
             <div class="divider"></div>
             <div class="icon-btn deactive">
@@ -220,7 +276,7 @@
             </div>
             <div class="divider"></div>
             <div class="icon-btn" onclick="resetZoom()" title="Fit Screen"><span class="material-symbols-outlined">fit_screen</span></div>
-            <div class="icon-btn" onclick="rotateImage()"><span class="material-symbols-outlined">rotate_right</span></div>
+            <div class="icon-btn" onclick="rotateImage()" title="Rotate"><span class="material-symbols-outlined">rotate_right</span></div>
             <div class="divider"></div>
             <div class="icon-btn" onclick="downloadDocument()" title="Download"><span class="material-symbols-outlined">download</span></div>
             <div class="icon-btn" onclick="printDocument()" title="Print"><span class="material-symbols-outlined">print</span></div>
@@ -230,81 +286,78 @@
 
     <div class="content-area">
         <div id="sidebar">
-            <!-- এখানে active-thumbnail ক্লাসটি ডিফল্টভাবে দেওয়া হয়েছে -->
             <img src="NAM JARI KHARIZ copy.jpg32323.jpg" class="thumbnail active-thumbnail" alt="Thumbnail" onclick="selectThumbnail(this)">
             <div class="page-num">Page 1</div>
         </div>
 
         <div class="viewer">
-            <img id="documentImage" src="NAM JARI KHARIZ copy.jpg32323.jpg" class="main-img" alt="Main Document">
+            <!-- Wrapper rotates; img zooms -->
+            <div id="imgWrapper">
+                <img id="documentImage" src="NAM JARI KHARIZ copy.jpg32323.jpg" class="main-img" alt="Main Document" style="width: 850px;">
+            </div>
         </div>
     </div>
 
     <script>
-                // মোবাইলের জন্য আলাদা টাইটেল সেট করা
-if (window.innerWidth <= 600) {
-    document.title = "অনলাইন_খতিয়ান_প্রিন্ট.pdf"; // মোবাইলে যে নাম দেখাতে চান
-} else {
-    document.title = "খতিয়ান নং ২৫-৩৪৫৬"; // পিসিতে যে নাম থাকবে
-}
-        // সাইডবার হাইড/শো করার ফাংশন
+        // Title
+        document.title = window.innerWidth <= 600
+            ? "অনলাইন_খতিয়ান_প্রিন্ট.pdf"
+            : "খতিয়ান নং ২৫-৩৪৫৬";
+
+        // ── Sidebar ──
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.style.display === 'none') {
-                sidebar.style.display = 'flex';
-            } else {
-                sidebar.style.display = 'none';
-            }
+            const sb = document.getElementById('sidebar');
+            sb.style.display = sb.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // থাম্বনেইল সিলেক্ট করার ফাংশন
-        function selectThumbnail(element) {
-            // আগের সব থাম্বনেইল থেকে বর্ডার রিমুভ করা
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            thumbnails.forEach(thumb => thumb.classList.remove('active-thumbnail'));
-            
-            // ক্লিক করা থাম্বনেইলে বর্ডার এড করা
-            element.classList.add('active-thumbnail');
-            
-            // জুম রিসেট করা (ঐচ্ছিক)
+        function selectThumbnail(el) {
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active-thumbnail'));
+            el.classList.add('active-thumbnail');
             resetZoom();
         }
 
+        // ── Zoom (changes image width only, no scale transform) ──
         let currentZoom = 100;
-        let rotation = 0;
-        const img = document.getElementById('documentImage');
-        const zoomText = document.getElementById('zoomPercent');
+        const BASE_WIDTH = 850; // px at 100%
+        const img        = document.getElementById('documentImage');
+        const zoomText   = document.getElementById('zoomPercent');
 
-        function updateTransform() {
-            img.style.transform = `scale(${currentZoom / 100}) rotate(${rotation}deg)`;
-            if (currentZoom > 100) {
-                img.style.marginBottom = (currentZoom / 2) + "px";
-            } else {
-                img.style.marginBottom = "0px";
-            }
+        function applyZoom() {
+            img.style.width = (BASE_WIDTH * currentZoom / 100) + 'px';
+            zoomText.innerText = currentZoom + '%';
         }
 
         function changeZoom(amount) {
-            currentZoom += amount;
-            if (currentZoom < 20) currentZoom = 20;
-            if (currentZoom > 400) currentZoom = 400;
-            zoomText.innerText = currentZoom + '%';
-            updateTransform();
+            currentZoom = Math.min(400, Math.max(20, currentZoom + amount));
+            applyZoom();
         }
 
         function resetZoom() {
             currentZoom = 100;
-            zoomText.innerText = '100%';
-            updateTransform();
+            applyZoom();
         }
+
+        // ── Rotation (rotates the wrapper div) ──
+        let rotation = 0;
+        const wrapper = document.getElementById('imgWrapper');
 
         function rotateImage() {
-            rotation += 90;
-            updateTransform();
+            rotation = (rotation + 90) % 360;
+            wrapper.style.transform = `rotate(${rotation}deg)`;
+
+            // When 90° or 270°, add extra margin so the rotated image
+            // doesn't get clipped by the viewer edges
+            if (rotation === 90 || rotation === 270) {
+                const w = img.offsetWidth;
+                const h = img.offsetHeight;
+                const extra = (w - h) / 2;
+                wrapper.style.margin = extra > 0 ? `${extra}px 0` : '0';
+            } else {
+                wrapper.style.margin = '0';
+            }
         }
 
-        function printDocument() { window.print(); }
-
+        // ── Download ──
         function downloadDocument() {
             const link = document.createElement('a');
             link.href = img.src;
@@ -312,6 +365,14 @@ if (window.innerWidth <= 600) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // ── Print: landscape, no toolbar, respects current rotation ──
+        function printDocument() {
+            const printImg = document.getElementById('printImage');
+            // Pass current rotation to the print image via CSS variable
+            printImg.style.transform = `rotate(${rotation}deg)`;
+            window.print();
         }
     </script>
 </body>
